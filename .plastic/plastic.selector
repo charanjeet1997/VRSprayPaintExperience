@@ -1,0 +1,4 @@
+repository "VRSprayPainting/VRSprayPainting@13469030556669@cloud"
+  path "/"
+    br "/main"
+    co "/main"
