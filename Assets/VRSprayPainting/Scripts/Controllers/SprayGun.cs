@@ -9,8 +9,9 @@ using UnityEngine.XR.Interaction.Toolkit.Interactors;
 namespace VRSprayPainting
 {
     /// <summary>
-    /// VR interaction for the spray gun: grab with XRGrabInteractable, trigger (activate) sprays,
-    /// thumbstick up/down on the holding hand tightens/widens the spray cone (precision, like a gun's fan knob).
+    /// The held sprayer (spray gun or spray can, per SprayerProfile): grab with XRGrabInteractable, trigger
+    /// (activate) sprays, thumbstick up/down tightens/widens the cone when the profile allows (gun fan knob).
+    /// ApplyProfile shows that sprayer's model and moves the shared nozzle (effects, sound) and grab point onto it.
     /// Drives the VFX cone and a light haptic buzz while spraying.
     /// </summary>
     [RequireComponent(typeof(XRGrabInteractable))]
@@ -35,6 +36,12 @@ namespace VRSprayPainting
         [Tooltip("Mist spreads a little wider than the droplets that make the paint.")]
         [SerializeField] private float mistConeScale = 1.25f;
 
+        [Header("Sprayer models")]
+        [Tooltip("One per sprayer profile; ApplyProfile shows the matching one.")]
+        [SerializeField] private SprayerModel[] models = new SprayerModel[0];
+        [Tooltip("Grab point moved onto the active model's attach anchor.")]
+        [SerializeField] private Transform attachPoint;
+
         [Header("Haptics")]
         [SerializeField, Range(0f, 1f)] private float sprayHapticAmplitude = 0.12f;
         [SerializeField, Range(0f, 1f)] private float triggerHapticAmplitude = 0.35f;
@@ -48,6 +55,8 @@ namespace VRSprayPainting
         private XRBaseInputInteractor holder;
         private float appliedCone = -1f;
         private float nextHapticTime;
+        private bool coneAdjustable = true;
+        private Color loadedColor = Color.white;
 
         public bool IsSpraying { get; private set; }
         public bool IsHeld => holder != null;
@@ -57,6 +66,54 @@ namespace VRSprayPainting
         public float ConeAngle => coneAngle;
         public float MinConeAngle => minConeAngle;
         public float MaxConeAngle => maxConeAngle;
+        public SprayerProfile Profile { get; private set; }
+        public SprayerModel ActiveModel { get; private set; }
+
+        /// <summary>Raised after a new sprayer profile is applied.</summary>
+        public event Action<SprayerProfile> ProfileChanged;
+
+        /// <summary>Switches to a sprayer: model, nozzle, grab point, spray pattern. Safe while held.</summary>
+        public void ApplyProfile(SprayerProfile profile)
+        {
+            if (profile == null)
+                return;
+
+            Profile = profile;
+            ActiveModel = null;
+            foreach (SprayerModel model in models)
+            {
+                if (model == null)
+                    continue;
+                bool match = model.Profile == profile;
+                model.SetActive(match);
+                if (match)
+                    ActiveModel = model;
+            }
+
+            if (ActiveModel != null)
+            {
+                CopyLocalPose(ActiveModel.NozzleAnchor, nozzle);
+                CopyLocalPose(ActiveModel.AttachAnchor, attachPoint);
+                if (ActiveModel.PaintTintRenderer != null)
+                    paintCupRenderer = ActiveModel.PaintTintRenderer;
+            }
+
+            minConeAngle = profile.minConeAngle;
+            maxConeAngle = Mathf.Max(profile.minConeAngle, profile.maxConeAngle);
+            coneAdjustable = profile.coneAdjustable;
+            coneAngle = Mathf.Clamp(profile.coneAngle, minConeAngle, maxConeAngle);
+            ApplyConeToEffects();
+            SetSprayColor(loadedColor);
+            ProfileChanged?.Invoke(profile);
+        }
+
+        // Anchors are children of the sprayer like the nozzle and grab point, so local poses carry over.
+        private void CopyLocalPose(Transform from, Transform to)
+        {
+            if (from == null || to == null)
+                return;
+            to.SetPositionAndRotation(from.position, from.rotation);
+        }
 
         public event Action SprayStarted;
         public event Action SprayStopped;
@@ -106,7 +163,7 @@ namespace VRSprayPainting
 
         private void AdjustCone()
         {
-            if (holder != null)
+            if (holder != null && coneAdjustable)
             {
                 InputAction stick = holder.handedness == InteractorHandedness.Left ? leftThumbstick.action : rightThumbstick.action;
                 float y = stick != null ? stick.ReadValue<Vector2>().y : 0f;
@@ -135,6 +192,9 @@ namespace VRSprayPainting
             }
         }
 
+        /// <summary>Short buzz on the holding controller (no-op when not held).</summary>
+        public void PulseHaptic(float amplitude, float duration) => holder?.SendHapticImpulse(amplitude, duration);
+
         /// <summary>Demo control: the gun is moved by script, not a hand.</summary>
         public void SetAutopilot(bool on)
         {
@@ -153,6 +213,7 @@ namespace VRSprayPainting
         /// <summary>Visual feedback only: spray particles and paint cup show the loaded colour.</summary>
         public void SetSprayColor(Color color)
         {
+            loadedColor = color;
             // Droplets and mist share the loaded colour; each graph applies its own alpha over life.
             foreach (VisualEffect effect in sprayEffects)
                 if (effect != null && effect.HasVector4(SprayColorId))

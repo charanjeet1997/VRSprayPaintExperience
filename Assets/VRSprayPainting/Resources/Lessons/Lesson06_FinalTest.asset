@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6733ab7eb86d20d4084a4db0b6c21eed, type: 3}
+  m_Name: Lesson06_FinalTest
+  m_EditorClassIdentifier: Assembly-CSharp::VRSprayPainting.LessonData
+  lessonId: lesson06_test
+  title: 'Final test: paint the panel'
+  summary: Everything together, no helpers.
+  prerequisites:
+  - {fileID: 11400000, guid: 0c6fb2fd045368d4497986ff45cc1b98, type: 2}
+  sprayers: []
+  steps:
+  - rid: 5184086490568459030
+  - rid: 5184086490568459209
+  - rid: 5184086490568459031
+  - rid: 5184086490568459032
+  references:
+    version: 2
+    RefIds:
+    - rid: 5184086490568459030
+      type: {class: ExplainStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        title: 
+        body: "Paint the whole panel with one even coat, using everything you learned:\n\u2022
+          sprayer straight\n\u2022 {sweetMin}-{sweetMax} cm away\n\u2022 steady speed\n\u2022
+          passes overlapping by half\n\u2022 trigger on and off the edge\nNo live
+          help this time."
+        buttonLabel: Start test
+    - rid: 5184086490568459031
+      type: {class: PracticeStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: 'Paint the whole panel.
+
+          Press Finish now when you''re
+          happy with it.'
+        reading: {fileID: 0}
+        goal:
+          rid: 5184086490568459033
+        cleanPanel: 1
+        showCues: 0
+    - rid: 5184086490568459032
+      type: {class: AssessStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        skills:
+        - {fileID: 11400000, guid: ae2a4c65af4ef73499b699dcaa766904, type: 2}
+        - {fileID: 11400000, guid: d31cc895cd043e54fa20be06dfd49e8b, type: 2}
+        - {fileID: 11400000, guid: 7311a862061d94f4ca9de3a17a6f3b62, type: 2}
+        - {fileID: 11400000, guid: 7e7d5383bc8af9140bb14442eeefa47f, type: 2}
+        - {fileID: 11400000, guid: d5dc5276ed8325e48b588d59cb78f0ce, type: 2}
+        - {fileID: 11400000, guid: 1536b223c53902b40bd5ae2b05631553, type: 2}
+        - {fileID: 11400000, guid: 064257db55e2e7a42a71a4e8780496f8, type: 2}
+        defects:
+        - {fileID: 11400000, guid: b81ec75cb69cc484f96fe509a5f55843, type: 2}
+        - {fileID: 11400000, guid: 4e3fc8d45a6fb8047b78debeef6059da, type: 2}
+        - {fileID: 11400000, guid: b8952d4d5e384db45a4e6c6ba260d5a7, type: 2}
+        - {fileID: 11400000, guid: 3c9ad309554fbf844985ec527dbc2705, type: 2}
+        - {fileID: 11400000, guid: c6fe9c43c6f09bd44b06692a03195c0b, type: 2}
+    - rid: 5184086490568459033
+      type: {class: SprayTimeGoal, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        seconds: 40
+    - rid: 5184086490568459209
+      type: {class: SafetyStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: 'Test conditions: gear on and fan running.'
+        resetGear: 0

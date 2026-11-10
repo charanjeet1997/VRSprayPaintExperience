@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7b71127f01acc641a3ca051454d27eb, type: 3}
+  m_Name: HowToUse
+  m_EditorClassIdentifier: Assembly-CSharp::VRSprayPainting.HelpContent
+  pages:
+  - title: Welcome
+    body: 'This trainer teaches real spray painting, one skill at a time, and scores
+      you like a real job.
+
+
+      Before you start, clear a space around you (about
+      2 x 2 m) and stand in the middle. You can do everything standing in one place.'
+  - title: Controllers
+    body: '<b>GRIP</b> (side button): pick up and hold the sprayer.
+
+      <b>TRIGGER</b>
+      (index finger): spray. Also presses menu buttons.
+
+      <b>THUMBSTICK</b>
+      up / down: narrower / wider spray (spray gun only).
+
+      <b>B</b> or <b>Y</b>:
+      clear all paint.
+
+
+      To press a button on a panel: point at it with the
+      controller and pull the trigger.'
+  - title: Holding and spraying
+    body: 'Pick up the sprayer from the stool on your right.
+
+
+      <b>Spray can:</b>
+      shake it hard up and down until the ball rattles freely.
+
+      <b>Hold it
+      15-25 cm</b> from the panel, pointing straight at it.
+
+      <b>Move steadily</b>,
+      about 30 cm per second, in side-to-side passes.
+
+      Each pass <b>overlaps</b>
+      the last by half.
+
+      Start spraying just <b>before</b> the panel and stop
+      just <b>after</b> it.'
+  - title: Live help
+    body: 'The <b>ring</b> on the panel shows your distance:
+
+      <color=#4fd16a>GREEN</color>
+      = right distance   <color=#ffa030>ORANGE</color> = too close   <color=#ffd84a>YELLOW</color>
+      = too far   <color=#ff5a45>RED</color> = out of range.
+
+
+      In lessons,
+      a <b>number above the sprayer</b> shows your angle, distance, speed or how
+      well the can is mixed.
+
+
+      The <b>sign above the panel</b> shows when the
+      paint is wet and when it is dry and ready for the next coat.'
+  - title: Your report
+    body: "After each job you get a scorecard:\n\u2022 <b>Score</b> against the pass
+      mark.\n\u2022 <b>Film thickness</b> in \xB5m against the target: bare, thin,
+      on target, heavy.\n\u2022 <b>Defects</b> and the points they cost: runs, dry
+      spray, orange peel, missed spots.\n\u2022 <b>Technique</b> page: a bar per
+      skill, a score per coat and a graph of your distance and angle.\n\n<b>Thickness
+      map</b> colours the panel: blue = thin, green = good, red = too heavy.\nAll
+      attempts are saved in <b>History</b>."
+  - title: Safety
+    body: 'Real spray paint is toxic and flammable.
+
+      Always protect your lungs
+      and eyes (a <b>full-face respirator</b> rated for paint does both, or a half-mask
+      plus <b>safety goggles</b>), wear gloves, and spray in a <b>ventilated</b>
+      area (booth fan on, or outdoors).
+
+
+      The first lesson has you put the
+      respirator on in VR: pick it up from the small table on your right and bring
+      it to your face. Then point at the BOOTH FAN switch above the table and pull
+      the trigger.'

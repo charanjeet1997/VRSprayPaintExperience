@@ -175,5 +175,24 @@ Shader "Hidden/VRSprayPainting/PaintStamp"
             }
             ENDCG
         }
+
+        // Pass 2: downsample by pixel position (same orientation as the stamps on every platform).
+        // Draw into a smaller target; _TargetSize = its size in pixels.
+        Pass
+        {
+            CGPROGRAM
+            #pragma vertex vert_img
+            #pragma fragment frag
+            #include "UnityCG.cginc"
+
+            sampler2D _MainTex;
+            float4 _TargetSize;
+
+            float4 frag(v2f_img i) : SV_Target
+            {
+                return tex2D(_MainTex, i.pos.xy / _TargetSize.xy);
+            }
+            ENDCG
+        }
     }
 }

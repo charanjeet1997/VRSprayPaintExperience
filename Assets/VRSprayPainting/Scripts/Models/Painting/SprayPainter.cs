@@ -33,9 +33,9 @@ namespace VRSprayPainting
         [SerializeField] private float minSpotDistance = 0.03f;
         [Tooltip("Ideal coat between sweet min and sweet max.")]
         [SerializeField] private float sweetMin = 0.15f;
-        [SerializeField] private float sweetMax = 0.30f;
+        [SerializeField] private float sweetMax = 0.25f;
         [Tooltip("The coat fades to nothing here (dry spray). Further paints nothing.")]
-        [SerializeField] private float maxDistance = 0.45f;
+        [SerializeField] private float maxDistance = 0.40f;
         [Tooltip("How far the aim ray looks for a surface, for the aim marker.")]
         [SerializeField] private float aimReach = 1.2f;
 
@@ -74,10 +74,30 @@ namespace VRSprayPainting
         public Vector3 AimPoint { get; private set; }
         public Vector3 AimNormal { get; private set; }
         public float AimDistance { get; private set; }
+        /// <summary>Angle between the spray axis and the surface normal, degrees (0 = straight on).</summary>
+        public float AimTilt { get; private set; }
         /// <summary>True on the frames paint actually landed.</summary>
         public bool IsPainting { get; private set; }
 
+        /// <summary>
+        /// 0 = smooth flow, 1 = badly sputtering (an aerosol can that wasn't shaken: propellant and pigment not
+        /// mixed). Less paint, spits in spurts, grainy. Set by SprayCanShaker.
+        /// </summary>
+        public float Sputter { get; set; }
+
         public void SetColor(Color color) => brush.color = color;
+
+        private void OnEnable() => sprayGun.ProfileChanged += ApplyProfile;
+        private void OnDisable() => sprayGun.ProfileChanged -= ApplyProfile;
+
+        /// <summary>Working range and paint flow of the active sprayer (gun, can...).</summary>
+        private void ApplyProfile(SprayerProfile profile)
+        {
+            sweetMin = profile.sweetMin;
+            sweetMax = Mathf.Max(profile.sweetMin, profile.sweetMax);
+            maxDistance = Mathf.Max(sweetMax, profile.maxDistance);
+            brush.amount = profile.flowAmount;
+        }
 
         /// <summary>Spot radius in metres at a distance, for the current cone.</summary>
         public float SpotRadiusAt(float distance) => distance * Mathf.Tan(sprayGun.ConeAngle * 0.5f * Mathf.Deg2Rad);
@@ -127,6 +147,7 @@ namespace VRSprayPainting
             AimPoint = hit.point;
             AimNormal = hit.normal;
             AimDistance = hit.distance;
+            AimTilt = Vector3.Angle(-nozzle.forward, hit.normal);
             Zone = ZoneAt(hit.distance);
             return true;
         }
@@ -164,6 +185,17 @@ namespace VRSprayPainting
             // Frame-rate independent: the frame deposits what referenceRate stamps/s would.
             float frameAmount = 1f - Mathf.Pow(1f - baseAmount, Time.deltaTime * referenceRate);
 
+            // Unmixed can: thin, and it spits: some frames nothing comes out, some a blob.
+            if (Sputter > 0f)
+            {
+                if (UnityEngine.Random.value < Sputter * 0.45f)
+                {
+                    lastSurface = null;
+                    return;
+                }
+                frameAmount *= Mathf.Lerp(1f, UnityEngine.Random.Range(0.15f, 1.4f), Sputter) * (1f - Sputter * 0.5f);
+            }
+
             Vector2 uv = hit.textureCoord;
             float uvStep = Mathf.Max(Mathf.Min(axisU.magnitude, axisV.magnitude) * stampSpacing, 1e-5f);
             bool fill = ReferenceEquals(paintable, lastSurface) && Vector2.Distance(uv, lastUv) <= maxFillUvDistance;
@@ -182,8 +214,8 @@ namespace VRSprayPainting
                 color = brush.color,
                 amount = stampAmount,
                 softness = Mathf.Lerp(0.85f, 0.15f, wetness),
-                grain = Mathf.Clamp01(Mathf.Lerp(0.45f, 1f, dryness) - wetness * 0.35f),
-                overspray = Mathf.Clamp01(0.08f + dryness * 0.3f + glancing * 0.2f),
+                grain = Mathf.Clamp01(Mathf.Lerp(0.45f, 1f, dryness) - wetness * 0.35f + Sputter * 0.5f),
+                overspray = Mathf.Clamp01(0.08f + dryness * 0.3f + glancing * 0.2f + Sputter * 0.4f),
             };
 
             for (int i = 1; i <= steps; i++)

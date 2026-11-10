@@ -1,0 +1,106 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6733ab7eb86d20d4084a4db0b6c21eed, type: 3}
+  m_Name: Lesson04_Overlap
+  m_EditorClassIdentifier: Assembly-CSharp::VRSprayPainting.LessonData
+  lessonId: lesson04_overlap
+  title: Overlap your passes
+  summary: Each pass covers half of the last one.
+  prerequisites:
+  - {fileID: 11400000, guid: ca67fa90e5a53a64a98ff791fecd1d9b, type: 2}
+  sprayers: []
+  steps:
+  - rid: 5184086490568459034
+  - rid: 5184086490568459035
+  - rid: 5184086490568459036
+  - rid: 5184086490568459037
+  references:
+    version: 2
+    RefIds:
+    - rid: 5184086490568459034
+      type: {class: ExplainStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        title: 
+        body: 'One pass makes a stripe. To paint a whole panel you stack passes from
+          top to bottom.
+
+
+          Each pass should cover about half of the one
+          before.
+
+          No overlap = stripes and bare gaps. Too much = heavy,
+          uneven paint.'
+        buttonLabel: Watch demo
+    - rid: 5184086490568459035
+      type: {class: DemoStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        moves:
+        - caption: 'Pass 1: along the top edge.'
+          from: {x: -0.5, y: 0.38}
+          to: {x: 0.5, y: 0.38}
+          distance: 0.2
+          tilt: 0
+          duration: 2.2
+          spray: 1
+          switchColor: 0
+          shake: 0
+        - caption: 'Pass 2: aim at the lower edge of the first stripe.'
+          from: {x: 0.5, y: 0.24}
+          to: {x: -0.5, y: 0.24}
+          distance: 0.2
+          tilt: 0
+          duration: 2.2
+          spray: 1
+          switchColor: 0
+          shake: 0
+        - caption: Half on the old stripe, half on bare panel.
+          from: {x: -0.5, y: 0.1}
+          to: {x: 0.5, y: 0.1}
+          distance: 0.2
+          tilt: 0
+          duration: 2.2
+          spray: 1
+          switchColor: 0
+          shake: 0
+        - caption: 'Keep going: an even coat with no gaps.'
+          from: {x: 0.5, y: -0.04}
+          to: {x: -0.5, y: -0.04}
+          distance: 0.2
+          tilt: 0
+          duration: 2.2
+          spray: 1
+          switchColor: 0
+          shake: 0
+    - rid: 5184086490568459036
+      type: {class: PracticeStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: 'Paint the panel top to bottom in 6 passes.
+
+          Each
+          pass overlaps the last by about half.'
+        reading: {fileID: 11400000, guid: f3c0a05ce4867d2458c8a1d57f8c2260, type: 2}
+        goal:
+          rid: 5184086490568459038
+        cleanPanel: 1
+    - rid: 5184086490568459037
+      type: {class: AssessStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        skills:
+        - {fileID: 11400000, guid: 7e7d5383bc8af9140bb14442eeefa47f, type: 2}
+        - {fileID: 11400000, guid: d5dc5276ed8325e48b588d59cb78f0ce, type: 2}
+        defects:
+        - {fileID: 11400000, guid: b81ec75cb69cc484f96fe509a5f55843, type: 2}
+        - {fileID: 11400000, guid: 3c9ad309554fbf844985ec527dbc2705, type: 2}
+    - rid: 5184086490568459038
+      type: {class: PassCountGoal, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        passes: 6

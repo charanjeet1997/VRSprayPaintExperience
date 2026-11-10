@@ -43,6 +43,20 @@ namespace VRSprayPainting
             grabInteractable.selectExited.RemoveListener(OnReleased);
         }
 
+        /// <summary>New resting pose (e.g. another sprayer stands differently on the stool).</summary>
+        public void SetHome(Vector3 position, Quaternion rotation)
+        {
+            homePosition = position;
+            homeRotation = rotation;
+        }
+
+        /// <summary>Puts it at home now, unless it is in a hand.</summary>
+        public void SendHome()
+        {
+            if (!grabInteractable.isSelected)
+                Return();
+        }
+
         private void OnGrabbed(SelectEnterEventArgs args) => releasedTime = -1f;
         private void OnReleased(SelectExitEventArgs args) => releasedTime = Time.time;
 

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace VRSprayPainting
 {
     /// <summary>
-    /// World-space palette: colour swatches, clear paint, reopen the guide.
+    /// World-space palette: colour swatches, clear paint, check my work (assessment), back to the main menu.
     /// Always visible; reflects the current colour from the Paint.Color property.
     /// </summary>
     public class PaletteScreen : UISystem.Screen
@@ -16,7 +16,9 @@ namespace VRSprayPainting
         [SerializeField] private Image currentColorPreview;
         [SerializeField] private TMP_Text currentColorName;
         [SerializeField] private Button clearButton;
+        [Tooltip("Back to the main menu.")]
         [SerializeField] private Button guideButton;
+        [SerializeField] private Button checkButton;
 
         private IObserverManager observerManager;
 
@@ -29,7 +31,9 @@ namespace VRSprayPainting
                 swatch.Clicked += OnSwatchClicked;
 
             clearButton.onClick.AddListener(() => observerManager.GetOrCreateObserver(ObserverNameConstants.PaintResetRequested).Notify());
-            guideButton.onClick.AddListener(() => observerManager.GetOrCreateObserver(ObserverNameConstants.OnboardingRestartPressed).Notify());
+            if (checkButton != null)
+                checkButton.onClick.AddListener(() => observerManager.GetOrCreateObserver(ObserverNameConstants.AssessmentRequested).Notify());
+            guideButton.onClick.AddListener(() => observerManager.GetOrCreateObserver(ObserverNameConstants.MenuRequested).Notify());
 
             paintColor.Bind(this, OnPaintColorChanged);
             OnPaintColorChanged(paintColor.Value);

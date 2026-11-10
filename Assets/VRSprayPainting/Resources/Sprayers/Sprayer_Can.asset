@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3efc60c79a999c4d9ada4a61ebf4a4d, type: 3}
+  m_Name: Sprayer_Can
+  m_EditorClassIdentifier: Assembly-CSharp::VRSprayPainting.SprayerProfile
+  sprayerId: can
+  displayName: Spray can
+  progressScope: can
+  sweetMin: 0.15
+  sweetMax: 0.25
+  maxDistance: 0.4
+  coneAngle: 25
+  coneAdjustable: 0
+  minConeAngle: 25
+  maxConeAngle: 25
+  film:
+    micronsPerVolume: 25
+    target: {x: 40, y: 75}
+  flowAmount: 0.18
+  requiresShaking: 1
+  mixPerShake: 0.02
+  settleSeconds: 90
+  rattleClips:
+  - {fileID: 8300000, guid: d9b55623c11f8704b8e6bf6766c7a008, type: 3}
+  - {fileID: 8300000, guid: a037ed6d2bfd946428343ad7a268daee, type: 3}
+  - {fileID: 8300000, guid: b23325f0889aad74e83e750e5700e123, type: 3}
+  - {fileID: 8300000, guid: 90a5a0f16e3bc934f8b664904517a2b8, type: 3}
+  - {fileID: 8300000, guid: 73338d86e12f1a64786b360cc5973cc2, type: 3}
+  - {fileID: 8300000, guid: c1989c97af4606a439955826525ce8bb, type: 3}
+  hissLoop: {fileID: 8300000, guid: d24d542e59df3c64cac7c6dd910a43ef, type: 3}
+  sprayStart: {fileID: 8300000, guid: 1165898468e89b64ebcc9bdcb593f2ac, type: 3}
+  sprayStop: {fileID: 8300000, guid: b43fbb4e4e259d243836b12955076a1f, type: 3}
+  triggerClick: {fileID: 8300000, guid: 9bb3dd41f033b09468063ebbfedf33b3, type: 3}
+  hissVolume: 0.5
+  pitchRange: {x: 1, y: 1}

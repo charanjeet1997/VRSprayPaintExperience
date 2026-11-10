@@ -1,0 +1,98 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6733ab7eb86d20d4084a4db0b6c21eed, type: 3}
+  m_Name: Lesson07_Coats
+  m_EditorClassIdentifier: Assembly-CSharp::VRSprayPainting.LessonData
+  lessonId: lesson07_coats
+  title: Two thin coats
+  summary: Let the first coat dry, then add a second.
+  prerequisites:
+  - {fileID: 11400000, guid: b403c2f5f3389024292756546e58325c, type: 2}
+  sprayers: []
+  steps:
+  - rid: 5184086490568459201
+  - rid: 5184086490568459202
+  - rid: 5184086490568459203
+  - rid: 5184086490568459204
+  - rid: 5184086490568459205
+  references:
+    version: 2
+    RefIds:
+    - rid: 5184086490568459201
+      type: {class: ExplainStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        title: 
+        body: 'Real spray paint goes on in thin coats.
+
+
+          The first coat
+          looks patchy and the old colour shows through. That''s normal.
+
+          Let
+          it dry, then a second coat covers evenly.
+
+          One heavy coat instead
+          runs, sags and stays tacky.'
+        buttonLabel: Start
+    - rid: 5184086490568459202
+      type: {class: PracticeStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: 'Coat 1: paint the whole panel in 6 overlapping passes.
+
+          It
+          will look patchy. That''s right.'
+        reading: {fileID: 11400000, guid: f3c0a05ce4867d2458c8a1d57f8c2260, type: 2}
+        goal:
+          rid: 5184086490568459206
+        cleanPanel: 1
+        showCues: 1
+    - rid: 5184086490568459203
+      type: {class: PracticeStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: 'Let it dry. Watch the sign above the panel.
+
+          Don''t
+          spray yet.'
+        reading: {fileID: 0}
+        goal:
+          rid: 5184086490568459207
+        cleanPanel: 0
+        showCues: 1
+    - rid: 5184086490568459204
+      type: {class: PracticeStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: 'Coat 2: paint the whole panel again in 6 overlapping passes.'
+        reading: {fileID: 11400000, guid: f3c0a05ce4867d2458c8a1d57f8c2260, type: 2}
+        goal:
+          rid: 5184086490568459208
+        cleanPanel: 0
+        showCues: 1
+    - rid: 5184086490568459205
+      type: {class: AssessStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        skills:
+        - {fileID: 11400000, guid: 7e7d5383bc8af9140bb14442eeefa47f, type: 2}
+        - {fileID: 11400000, guid: d5dc5276ed8325e48b588d59cb78f0ce, type: 2}
+        defects:
+        - {fileID: 11400000, guid: b81ec75cb69cc484f96fe509a5f55843, type: 2}
+        - {fileID: 11400000, guid: 3c9ad309554fbf844985ec527dbc2705, type: 2}
+    - rid: 5184086490568459206
+      type: {class: PassCountGoal, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        passes: 6
+    - rid: 5184086490568459207
+      type: {class: DryGoal, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data: 
+    - rid: 5184086490568459208
+      type: {class: PassCountGoal, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        passes: 6

@@ -69,7 +69,7 @@ namespace VRSprayPainting
             {
                 type = OnboardingStepType.BuildUp,
                 title = "Build up the coat",
-                body = "Spray in smooth passes, gun straight on. Keep the ring GREEN (15-30 cm).\nToo close = heavy, too far = dry and speckled. Thumbstick up/down = tighter/wider spray.",
+                body = "Spray in smooth passes, gun straight on. Keep the ring GREEN (15-25 cm).\nToo close = heavy, too far = dry and speckled. Thumbstick up/down = tighter/wider spray.",
                 successText = "Great coverage!",
                 inputHint = "Hold TRIGGER  +  Stick",
             },
@@ -93,7 +93,7 @@ namespace VRSprayPainting
             {
                 type = OnboardingStepType.Done,
                 title = "You're ready!",
-                body = "Paint freely. Dropped the gun? It returns to the stool by itself.\nOpen this guide again from the palette any time.",
+                body = "Paint freely. Dropped the gun? It returns to the stool by itself.\nOpen this tour again from the Main menu any time.",
                 primaryLabel = "Hide guide",
             },
         };

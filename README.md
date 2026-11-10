@@ -20,9 +20,9 @@ Pick up a spray gun, find the right distance, and lay down paint that builds up,
   | Ring | Distance | Result |
   |---|---|---|
   | Orange | under 15 cm | wet, heavy |
-  | Green | 15–30 cm | sweet spot |
-  | Yellow | 30–45 cm | dry, speckled |
-  | Red | over 45 cm | no paint |
+  | Green | 15–25 cm | sweet spot |
+  | Yellow | 25–40 cm | dry, speckled |
+  | Red | over 40 cm | no paint |
 
 - **Close range.** The gun still paints very close to the surface. It stops only when the nozzle clips into it.
 - **Adjustable cone.** Thumbstick up gives a tighter spray, down a wider one (8°–35°).
@@ -37,7 +37,91 @@ Pick up a spray gun, find the right distance, and lay down paint that builds up,
 - **Fast coverage.** One pass covers most of the surface, like real spray paint. The result doesn't depend on frame rate.
 - **Performance.** Each stamp only redraws its own small rectangle of the texture, which keeps it cheap on Quest.
 
-### Onboarding
+### Real-world defects
+- **Runs and drips.** Paint thicker than it can hold runs: a drip bead slides down the panel, leaving a narrow trail of the same colour and ending in a bead (`PaintRunSimulator`). Holding still, going too slow or spraying too close causes them.
+- **Dry spray** when too far, **sputter** from an unshaken can, **heavy edges** from starting/stopping on the panel.
+
+### Spray can realism
+- **Shake before use.** Real shaking is detected from the can's movement: each stroke clacks (mixing ball) and buzzes the controller. The mix settles back over ~90 s.
+- **Unshaken = sputter.** Less paint, spits in spurts, grainy coat.
+
+### Spray gun or spray can
+Choose the sprayer on the main menu (saved). Each is a `SprayerProfile` asset (`Resources/Sprayers`):
+
+| | Spray gun (HVLP) | Spray can (aerosol) |
+|---|---|---|
+| Working distance (green) | 15–25 cm | 20–30 cm |
+| Max distance | 40 cm | 45 cm |
+| Spray pattern | Adjustable with the thumbstick (8–35°) | Fixed round spray (25°) |
+| Paint flow | Higher | Lower |
+| Sound | Air hiss | Aerosol hiss, button click |
+
+Lessons, the live readings and the feedback use the active sprayer's range. Lesson progress is kept per sprayer, and a lesson can be limited to one sprayer. A new sprayer = a profile asset plus a `SprayerModel` (look, nozzle, grip, colliders, resting spot) on the held sprayer.
+
+### VR hands
+Controllers show as hands. Grip closes the hand, the trigger curls the index finger (`ControllerHandPoser`).
+
+### Training: lessons and assessment
+This is a training simulator, not a game. It teaches one real-world skill at a time and scores you against real-world standards.
+
+- **Main menu.** Pick a lesson, Free Paint or the getting-started tour.
+- **Lessons**, unlocked in order (pass one to open the next). Each lesson runs **Explain → Watch → Try → Report → Result**:
+
+  | # | Lesson | Live reading | Practice goal | Scored on |
+  |---|---|---|---|---|
+  | S | Safety and prep | Checklist | Respirator + goggles on, booth fan on | (completion) |
+  | 0 | Shake the can *(can only)* | Mix % | Shake until mixed, then spray | Can mixed |
+  | 1 | Hold the sprayer straight | Angle | 10 s spraying | Sprayer angle |
+  | 2 | Keep the right distance | Distance | 10 s spraying | Distance |
+  | 3 | Move at a steady speed | Speed | 12 s spraying | Speed, Even coat |
+  | 4 | Overlap your passes | Distance | 6 passes | Coverage, Even coat |
+  | 5 | Trigger on and off the edge | none | 4 passes | Trigger control, Coverage |
+  | 7 | Two thin coats | Distance | Coat 1 (6 passes) → wait to dry → coat 2 | Coverage, Even coat |
+  | 8 | Final test | none (cues off) | Safety check, then paint the panel | All skills + all defects |
+- **Watch.** The real gun demonstrates the right and the wrong way (tilted, too close, too far) and you see the result on the panel.
+- **Try.** A live reading above the gun (angle or distance) turns green when you are doing it right.
+- **Scorecard report** (two pages):
+  - *Summary*: score vs the pass mark, number of coats, **film thickness in µm** against the target (bare / thin / on target / heavy), **defects with point deductions** (runs & sags, dry spray, orange peel, missed spots, safety gear) and what to fix.
+  - *Technique*: a bar per skill, a score **per coat**, and a **graph of distance and angle over time** with the target bands.
+- **Assessment report (details).** Scores per skill (gun angle, distance, speed, coverage, even coat, paint on target) and plain-language feedback. It names the mistake, what it causes in real life and how to fix it, e.g. *"You held the spray on one spot for 1.4 s. In real life that much paint runs and drips."*
+- **Thickness view.** A heat map of the coat: blue = see-through, green = good, red = too thick (would run).
+- **Free Paint "Check my work".** Assesses all skills on anything you paint.
+- **Progress** (best score, passed) is saved on the device.
+- **History**: every attempt is saved (date, activity, sprayer, score, coats, film, defects, skills) with the trend, and can be **exported as CSV** (`Application.persistentDataPath/attempts.csv`; on Quest under `Android/data/<package>/files`).
+- **Instructor settings**: pass mark, defect strictness (off / small / medium / large), drying time between coats, training cues on/off.
+- **How to use**: shown on first launch and from the menu: controllers, pointing at buttons, live cues, the report, safety.
+
+### Accuracy (real-world numbers)
+| | Value | Source |
+|---|---|---|
+| Distance | 15–25 cm (spray can ideal ~20 cm) | wikiHow, Instructables |
+| Speed | 20–45 cm/s (≈ 1 ft/s) | wikiHow |
+| Angle | straight on, within 10° | spray-finishing practice |
+| Coats | thin coats: one pass is patchy, two coats cover; dry between coats | wikiHow, Instructables |
+| Film thickness | 25 µm per unit of paint; target 40–75 µm dry film | `SprayerProfile.film` |
+| Shaking | ~12–15 s of hard shaking in VR (real: 1–3 min) | wikiHow |
+| Safety | respirator, goggles, ventilation before spraying | wikiHow, Instructables |
+
+Fresh paint looks wet and glossy and dries matte; a sign under the panel counts down the drying time.
+
+#### Training architecture (data-driven)
+| Asset / type | Role | To extend |
+|---|---|---|
+| `LessonCatalog` | Menu order of all lessons | Add the lesson asset to the list |
+| `LessonData` | Title, summary, prerequisites and an ordered list of **steps** | Create an asset; pick steps in the Inspector |
+| `LessonStep` (`ExplainStep`, `DemoStep`, `PracticeStep`, `SafetyStep`, `AssessStep`) | One stage of a lesson; steps can repeat and mix | New subclass = new kind of stage |
+| `PracticeGoal` (`SprayTimeGoal`, `PassCountGoal`, `ShakeGoal`, `DryGoal`) | When practice ends | New subclass (e.g. passes, coverage) |
+| `DefectDefinition` (`RunsDefect`, `DrySprayDefect`, `OrangePeelDefect`, `MissedSpotsDefect`, `SafetyDefect`) | Measures one defect and deducts points (scaled by strictness) | New subclass + asset |
+| `SkillDefinition` (`AngleSkill`, `DistanceSkill`, `SpeedSkill`, `CoverageSkill`, `EvennessSkill`, `OnTargetSkill`, `TriggerControlSkill`, `MixSkill`) | Scores one skill and explains a low score | New subclass + asset |
+| `CoachReading` (`AngleReading`, `DistanceReading`, `SpeedReading`, `MixReading`) | Live reading on the sprayer | New subclass + asset |
+| `HelpContent` | Pages of the "How to use" guide | Edit text in the Inspector |
+| `IProgressStore` | Where results are saved (PlayerPrefs today) | New implementation (file, cloud, LMS) |
+
+`LessonController` is a generic runner: it plays any step list and knows no lesson or skill in particular.
+Text in lessons can use `{sweetMin}`, `{sweetMax}`, `{maxDistance}`, `{maxTilt}`, filled from the current sprayer.
+Assets live in `Resources/Lessons`, `Resources/Skills` and `Resources/Coach`.
+
+### Getting-started tour
 - **Intro demo.** The real spray gun flies over and paints the panel by itself. It shows the sweet spot, too close, too far and colour blending, then returns to the stool.
 - **Step-by-step guide.** Each step completes when you actually do it: grab, spray, build up a coat, change colour, reset.
 - **Floating hints** point at the gun, the panel and the palette.
@@ -91,15 +175,18 @@ Pick up a spray gun, find the right distance, and lay down paint that builds up,
 ```
 Assets/VRSprayPainting/
 ├── Editor/         Builders for the scene, lighting, meshes and VFX
+├── Resources/      Lessons/ (catalog + lessons), Skills/, Coach/
 ├── Scenes/         PaintTest scene + lighting settings
 ├── Scripts/
 │   ├── Constants/  Shader IDs, data-binding / observer keys
-│   ├── Controllers/SprayGun, SprayGunAudio, SprayAimMarker, SprayDemoController,
+│   ├── Controllers/SprayGun, SprayGunAudio, SprayAimMarker, SprayDemoController, SprayCoachReadout,
+│   │               AppModeController, LessonController, AssessmentController,
 │   │               OnboardingController, PaintResetInput, ReturnHome
 │   ├── Interfaces/ IPaintable
-│   ├── Models/     Painting (SprayPainter, PaintableSurface, PaintStamp), Onboarding data
-│   ├── UI/         Onboarding and palette screens, swatch buttons
-│   └── Utils/      HintBob
+│   ├── Models/     Painting (SprayPainter, PaintableSurface, PaintStamp),
+│   │               Assessment (SprayTracker, CoatAnalyzer, AssessmentCalculator), Lessons data, Onboarding data
+│   ├── UI/         Menu, lesson, report, onboarding and palette screens; lesson cards, score bars, swatches
+│   └── Utils/      HintBob, LessonProgress
 ├── Shaders/        PaintStamp (paint deposit + KM mixing), PaintedSurface (URP lit + lightmaps)
 ├── Sounds/         Spray loop, start, stop, trigger click
 └── VFX/            Spray droplet and mist graphs

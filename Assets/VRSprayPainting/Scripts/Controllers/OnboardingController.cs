@@ -11,6 +11,7 @@ namespace VRSprayPainting
     /// <summary>
     /// Step-by-step guide. Each step completes on the real action (grab, spray, pick colour, reset),
     /// publishes its text through IPropertyManager and toggles the world hints for that step.
+    /// Opened from the main menu as the getting-started tour (OnboardingRestartPressed); not shown on launch.
     /// </summary>
     public class OnboardingController : MonoBehaviour
     {
@@ -52,8 +53,6 @@ namespace VRSprayPainting
             sprayPainter.Painted += OnPainted;
             demo.CaptionChanged += OnDemoCaption;
             demo.Finished += OnDemoFinished;
-
-            ShowStep(0);
         }
 
         private void OnDestroy()

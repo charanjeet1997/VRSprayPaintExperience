@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6733ab7eb86d20d4084a4db0b6c21eed, type: 3}
+  m_Name: LessonS_Safety
+  m_EditorClassIdentifier: Assembly-CSharp::VRSprayPainting.LessonData
+  lessonId: lesson_safety
+  title: Safety and prep
+  summary: Respirator, goggles and the booth fan.
+  prerequisites: []
+  sprayers: []
+  steps:
+  - rid: 5184086490568459199
+  - rid: 5184086490568459200
+  references:
+    version: 2
+    RefIds:
+    - rid: 5184086490568459199
+      type: {class: ExplainStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        title: 
+        body: "Spray paint is toxic and flammable. The fine mist gets into your lungs
+          and eyes.\n\nReal painters always:\n\u2022 wear a respirator rated for
+          paint and safety goggles\n\u2022 spray with ventilation (booth extraction
+          fan, or outdoors)\n\u2022 clean and mask the part before painting\n\nLet's
+          get ready."
+        buttonLabel: Start
+    - rid: 5184086490568459200
+      type: {class: SafetyStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: 'Get ready like a real painter:'
+        resetGear: 1

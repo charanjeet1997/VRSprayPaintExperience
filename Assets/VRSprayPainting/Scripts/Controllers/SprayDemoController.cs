@@ -7,7 +7,7 @@ using UnityEngine.XR.Interaction.Toolkit.Interactables;
 namespace VRSprayPainting
 {
     /// <summary>
-    /// Intro demo: the real spray gun lifts off the stool and paints the panel by itself (real paint, particles,
+    /// Spray demo (intro and per lesson): the real spray gun lifts off the stool and paints the panel by itself (real paint, particles,
     /// sound and aim ring), showing the sweet spot, too close, too far and colour blending. Captions are raised
     /// through CaptionChanged. Skipping flies the gun back to the stool; actually grabbing it ends the demo in
     /// the user's hand. Pointer rays passing over the gun are ignored.
@@ -15,21 +15,6 @@ namespace VRSprayPainting
     [DefaultExecutionOrder(-50)] // move the gun before SprayPainter aims this frame
     public class SprayDemoController : MonoBehaviour
     {
-        [Serializable]
-        private struct Move
-        {
-            public string caption;
-            [Tooltip("Start / end on the panel, -0.5..0.5 of the demo area.")]
-            public Vector2 from;
-            public Vector2 to;
-            [Tooltip("Nozzle distance from the surface, metres.")]
-            public float distance;
-            public float duration;
-            public bool spray;
-            [Tooltip("Load the second demo colour before this move.")]
-            public bool switchColor;
-        }
-
         [SerializeField] private SprayGun sprayGun;
         [SerializeField] private SprayPainter sprayPainter;
         [SerializeField] private XRGrabInteractable gunGrab;
@@ -42,7 +27,8 @@ namespace VRSprayPainting
         [SerializeField] private float travelTime = 0.6f;
         [SerializeField] private float flyTime = 1.2f;
         [SerializeField] private float endHold = 1.5f;
-        [SerializeField] private Move[] moves = DefaultMoves();
+        [Tooltip("Intro demo. Lessons pass their own moves to Play.")]
+        [SerializeField] private DemoMove[] moves = DefaultMoves();
 
         public event Action<string> CaptionChanged;
         public event Action Finished;
@@ -56,23 +42,31 @@ namespace VRSprayPainting
         private Coroutine routine;
         private bool returning;
         private bool restorePhysicsOnRelease;
+        private DemoMove[] playing;
 
-        private static Move[] DefaultMoves() => new[]
+        private static DemoMove[] DefaultMoves() => new[]
         {
-            new Move { caption = "Hold the gun 15-30 cm away, straight on. The ring turns GREEN in the sweet spot.", from = new Vector2(-0.45f, 0.3f), to = new Vector2(-0.45f, 0.3f), distance = 0.22f, duration = 1.2f },
-            new Move { caption = "Smooth, steady passes in the green zone give an even coat.", from = new Vector2(-0.45f, 0.3f), to = new Vector2(0.45f, 0.3f), distance = 0.22f, duration = 2.2f, spray = true },
-            new Move { caption = "Overlap each pass by about half.", from = new Vector2(0.45f, 0.15f), to = new Vector2(-0.45f, 0.15f), distance = 0.22f, duration = 2.2f, spray = true },
-            new Move { caption = "Too close (ORANGE): a small, heavy, wet spot.", from = new Vector2(-0.4f, -0.05f), to = new Vector2(0.4f, -0.05f), distance = 0.07f, duration = 2f, spray = true },
-            new Move { caption = "Too far (YELLOW): thin, dry and speckled.", from = new Vector2(0.45f, -0.3f), to = new Vector2(-0.45f, -0.3f), distance = 0.4f, duration = 2.2f, spray = true },
-            new Move { caption = "New colour over old paint blends like real paint: thin = tinted, heavy = covers.", from = new Vector2(0f, 0.42f), to = new Vector2(0f, 0.42f), distance = 0.22f, duration = 1.2f, switchColor = true },
-            new Move { caption = "New colour over old paint blends like real paint: thin = tinted, heavy = covers.", from = new Vector2(0f, 0.42f), to = new Vector2(0f, -0.42f), distance = 0.22f, duration = 3f, spray = true },
+            new DemoMove { caption = "Hold the gun 15-25 cm away, straight on. The ring turns GREEN in the sweet spot.", from = new Vector2(-0.45f, 0.3f), to = new Vector2(-0.45f, 0.3f), distance = 0.22f, duration = 1.2f },
+            new DemoMove { caption = "Smooth, steady passes in the green zone give an even coat.", from = new Vector2(-0.45f, 0.3f), to = new Vector2(0.45f, 0.3f), distance = 0.22f, duration = 2.2f, spray = true },
+            new DemoMove { caption = "Overlap each pass by about half.", from = new Vector2(0.45f, 0.15f), to = new Vector2(-0.45f, 0.15f), distance = 0.22f, duration = 2.2f, spray = true },
+            new DemoMove { caption = "Too close (ORANGE): a small, heavy, wet spot.", from = new Vector2(-0.4f, -0.05f), to = new Vector2(0.4f, -0.05f), distance = 0.07f, duration = 2f, spray = true },
+            new DemoMove { caption = "Too far (YELLOW): thin, dry and speckled.", from = new Vector2(0.45f, -0.3f), to = new Vector2(-0.45f, -0.3f), distance = 0.34f, duration = 2.2f, spray = true },
+            new DemoMove { caption = "New colour over old paint blends like real paint: thin = tinted, heavy = covers.", from = new Vector2(0f, 0.42f), to = new Vector2(0f, 0.42f), distance = 0.22f, duration = 1.2f, switchColor = true },
+            new DemoMove { caption = "New colour over old paint blends like real paint: thin = tinted, heavy = covers.", from = new Vector2(0f, 0.42f), to = new Vector2(0f, -0.42f), distance = 0.22f, duration = 3f, spray = true },
         };
 
-        // The stool pose from scene start: the demo always ends with the gun back there.
+        // The stool pose from scene start: the demo always ends with the sprayer back there.
         private void Awake()
         {
             homePosition = gunBody.transform.position;
             homeRotation = gunBody.transform.rotation;
+        }
+
+        /// <summary>Resting pose the demo returns the sprayer to (changes with the sprayer type).</summary>
+        public void SetHome(Vector3 position, Quaternion rotation)
+        {
+            homePosition = position;
+            homeRotation = rotation;
         }
 
         private void OnEnable()
@@ -89,11 +83,13 @@ namespace VRSprayPainting
                 End(returnHome: true);
         }
 
-        /// <summary>Plays the demo. Returns false (and does nothing) if the gun is already in a hand.</summary>
-        public bool Play()
+        /// <summary>Plays the intro demo, or the given moves. Returns false (and does nothing) if the gun is in a hand.</summary>
+        public bool Play(DemoMove[] customMoves = null)
         {
             if (IsPlaying || returning || gunGrab.isSelected)
                 return false;
+
+            playing = customMoves != null && customMoves.Length > 0 ? customMoves : moves;
 
             IsPlaying = true;
             wasKinematic = gunBody.isKinematic;
@@ -130,30 +126,42 @@ namespace VRSprayPainting
             paintReset.ResetAll();
 
             // Lift off the stool to the first point.
-            Pose start = PoseAt(moves[0].from, moves[0].distance);
+            Pose start = PoseAt(playing[0].from, playing[0].distance, playing[0].tilt);
             Transform gun = gunBody.transform;
             yield return Fly(gun.position, gun.rotation, start.position, start.rotation, flyTime);
 
-            Vector2 at = moves[0].from;
-            float distance = moves[0].distance;
-            foreach (Move move in moves)
+            Vector2 at = playing[0].from;
+            float distance = playing[0].distance;
+            float tilt = playing[0].tilt;
+            foreach (DemoMove move in playing)
             {
                 Caption(move.caption);
                 if (move.switchColor)
                     ApplyColor(secondColor);
 
                 // Travel to the start of the move with the trigger released.
-                if ((move.from - at).sqrMagnitude > 1e-6f || !Mathf.Approximately(move.distance, distance))
+                if ((move.from - at).sqrMagnitude > 1e-6f || !Mathf.Approximately(move.distance, distance) || !Mathf.Approximately(move.tilt, tilt))
                 {
                     sprayGun.SetAutoSpray(false);
-                    yield return Glide(at, distance, move.from, move.distance, travelTime);
+                    yield return Glide(at, distance, tilt, move.from, move.distance, move.tilt, travelTime);
+                }
+
+                if (move.shake)
+                {
+                    sprayGun.SetAutoSpray(false);
+                    yield return Shake(move.from, move.distance, move.tilt, move.duration);
+                    at = move.from;
+                    distance = move.distance;
+                    tilt = move.tilt;
+                    continue;
                 }
 
                 sprayGun.SetAutoSpray(move.spray);
-                yield return Glide(move.from, move.distance, move.to, move.distance, move.duration);
+                yield return Glide(move.from, move.distance, move.tilt, move.to, move.distance, move.tilt, move.duration);
                 sprayGun.SetAutoSpray(false);
                 at = move.to;
                 distance = move.distance;
+                tilt = move.tilt;
             }
 
             Caption("Your turn! Pick up the spray gun.");
@@ -161,15 +169,28 @@ namespace VRSprayPainting
             yield return ReturnHome();
         }
 
-        private IEnumerator Glide(Vector2 from, float fromDist, Vector2 to, float toDist, float duration)
+        private IEnumerator Glide(Vector2 from, float fromDist, float fromTilt, Vector2 to, float toDist, float toTilt, float duration)
         {
             for (float time = 0f; time < duration; time += Time.deltaTime)
             {
                 float k = Mathf.SmoothStep(0f, 1f, time / duration);
-                Place(PoseAt(Vector2.Lerp(from, to, k), Mathf.Lerp(fromDist, toDist, k)));
+                Place(PoseAt(Vector2.Lerp(from, to, k), Mathf.Lerp(fromDist, toDist, k), Mathf.Lerp(fromTilt, toTilt, k)));
                 yield return null;
             }
-            Place(PoseAt(to, toDist));
+            Place(PoseAt(to, toDist, toTilt));
+        }
+
+        // Hard up-and-down strokes like shaking a spray can (about 5 per second, ±5 cm).
+        private IEnumerator Shake(Vector2 at, float distance, float tilt, float duration)
+        {
+            Pose centre = PoseAt(at, distance, tilt);
+            for (float time = 0f; time < duration; time += Time.deltaTime)
+            {
+                float offset = Mathf.Sin(time * Mathf.PI * 2f * 5f) * 0.05f;
+                SetGun(centre.position + Vector3.up * offset, centre.rotation);
+                yield return null;
+            }
+            Place(centre);
         }
 
         // Moves the gun body (not the nozzle) between two gun poses with an arc, used to leave and return to the stool.
@@ -185,18 +206,20 @@ namespace VRSprayPainting
             SetGun(toPos, toRot);
         }
 
-        // Gun pose that puts the nozzle at a point of the demo area, pointing straight into the surface.
-        private Pose PoseAt(Vector2 areaPoint, float distance)
+        // Gun pose that aims the nozzle at a point of the demo area from the given distance, straight on or tilted
+        // sideways by tiltDegrees (the aim point stays the same, the gun swings around it).
+        private Pose PoseAt(Vector2 areaPoint, float distance, float tiltDegrees)
         {
             Transform gun = gunBody.transform;
             Transform nozzle = sprayGun.Nozzle;
-            Vector3 nozzlePos = demoAnchor.position
-                                + demoAnchor.right * (areaPoint.x * areaSize.x)
-                                + demoAnchor.up * (areaPoint.y * areaSize.y)
-                                - demoAnchor.forward * distance;
+            Vector3 target = demoAnchor.position
+                             + demoAnchor.right * (areaPoint.x * areaSize.x)
+                             + demoAnchor.up * (areaPoint.y * areaSize.y);
+            Vector3 aim = Quaternion.AngleAxis(tiltDegrees, demoAnchor.up) * demoAnchor.forward;
+            Vector3 nozzlePos = target - aim * distance;
 
             Quaternion nozzleInGun = Quaternion.Inverse(gun.rotation) * nozzle.rotation;
-            Quaternion gunRot = Quaternion.LookRotation(demoAnchor.forward, demoAnchor.up) * Quaternion.Inverse(nozzleInGun);
+            Quaternion gunRot = Quaternion.LookRotation(aim, demoAnchor.up) * Quaternion.Inverse(nozzleInGun);
             Vector3 nozzleOffset = gunRot * Quaternion.Inverse(gun.rotation) * (nozzle.position - gun.position);
             return new Pose(nozzlePos - nozzleOffset, gunRot);
         }

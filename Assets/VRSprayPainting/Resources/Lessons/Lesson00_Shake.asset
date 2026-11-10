@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6733ab7eb86d20d4084a4db0b6c21eed, type: 3}
+  m_Name: Lesson00_Shake
+  m_EditorClassIdentifier: Assembly-CSharp::VRSprayPainting.LessonData
+  lessonId: lesson00_shake
+  title: Shake the can
+  summary: Mix the paint before you spray.
+  prerequisites:
+  - {fileID: 11400000, guid: a1fdb5136d560dd45af26a42275ece5d, type: 2}
+  sprayers:
+  - {fileID: 11400000, guid: 8c2e7e091cae20c41b362160310c7adf, type: 2}
+  steps:
+  - rid: 5184086490568459039
+  - rid: 5184086490568459040
+  - rid: 5184086490568459041
+  - rid: 5184086490568459042
+  - rid: 5184086490568459043
+  references:
+    version: 2
+    RefIds:
+    - rid: 5184086490568459039
+      type: {class: ExplainStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        title: 
+        body: 'A spray can holds paint and gas. The paint settles at the bottom,
+          and a small metal ball inside mixes it when you shake.
+
+
+          Not
+          shaken: it sputters, spits blobs and leaves a thin, blotchy coat.
+
+          Shaken
+          well (the ball rattles freely): a smooth, even spray.'
+        buttonLabel: Watch demo
+    - rid: 5184086490568459040
+      type: {class: DemoStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        moves:
+        - caption: Shake hard up and down. Listen for the ball rattling.
+          from: {x: -0.45, y: 0.2}
+          to: {x: -0.45, y: 0.2}
+          distance: 0.25
+          tilt: 0
+          duration: 3.5
+          spray: 0
+          switchColor: 0
+          shake: 1
+        - caption: 'Mixed: the spray comes out smooth and even.'
+          from: {x: -0.45, y: 0.2}
+          to: {x: 0.45, y: 0.2}
+          distance: 0.25
+          tilt: 0
+          duration: 2.4
+          spray: 1
+          switchColor: 0
+          shake: 0
+    - rid: 5184086490568459041
+      type: {class: PracticeStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: Pick up the can and shake it hard until the number above it
+          is GREEN.
+        reading: {fileID: 11400000, guid: 0bf42d1341e276e4c997a5ab708dd23c, type: 2}
+        goal:
+          rid: 5184086490568459044
+        cleanPanel: 1
+        showCues: 1
+    - rid: 5184086490568459042
+      type: {class: PracticeStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: 'Now spray the panel in side-to-side passes.
+
+          If it
+          starts to sputter, shake it again.'
+        reading: {fileID: 11400000, guid: 0bf42d1341e276e4c997a5ab708dd23c, type: 2}
+        goal:
+          rid: 5184086490568459045
+        cleanPanel: 1
+        showCues: 1
+    - rid: 5184086490568459043
+      type: {class: AssessStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        skills:
+        - {fileID: 11400000, guid: 064257db55e2e7a42a71a4e8780496f8, type: 2}
+        defects:
+        - {fileID: 11400000, guid: 4e3fc8d45a6fb8047b78debeef6059da, type: 2}
+    - rid: 5184086490568459044
+      type: {class: ShakeGoal, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        targetMix: 0.9
+        resetMix: 1
+    - rid: 5184086490568459045
+      type: {class: SprayTimeGoal, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        seconds: 8

@@ -26,10 +26,15 @@ namespace VRSprayPainting
 
         private static readonly int BaseColorId = Shader.PropertyToID("_BaseColor");
         private MaterialPropertyBlock block;
+        private DataBindingFramework.Property<bool> cuesAllowed;
 
         private void LateUpdate()
         {
-            bool visible = (sprayGun.IsHeld || sprayGun.IsAutopilot) && sprayPainter.Zone != SprayZone.NoSurface && sprayPainter.Zone != SprayZone.Clipping;
+            cuesAllowed ??= ServiceLocatorFramework.ServiceLocator.Current.Get<DataBindingFramework.IPropertyManager>()
+                .GetOrCreateProperty<bool>(PropertyNameConstants.CuesAllowed);
+            // The demo always shows it; the trainee sees it when cues are on (instructor setting, not in tests).
+            bool cues = sprayGun.IsAutopilot || (TrainingSettings.CuesEnabled && cuesAllowed.Value);
+            bool visible = cues && (sprayGun.IsHeld || sprayGun.IsAutopilot) && sprayPainter.Zone != SprayZone.NoSurface && sprayPainter.Zone != SprayZone.Clipping;
             if (markerRenderer.enabled != visible)
                 markerRenderer.enabled = visible;
             if (!visible)

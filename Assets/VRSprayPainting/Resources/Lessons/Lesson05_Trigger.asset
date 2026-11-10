@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6733ab7eb86d20d4084a4db0b6c21eed, type: 3}
+  m_Name: Lesson05_Trigger
+  m_EditorClassIdentifier: Assembly-CSharp::VRSprayPainting.LessonData
+  lessonId: lesson05_trigger
+  title: Trigger on and off the edge
+  summary: Start before the panel, stop after it.
+  prerequisites:
+  - {fileID: 11400000, guid: 60e7f999de7f8e04ab50ebfd16ef0daf, type: 2}
+  sprayers: []
+  steps:
+  - rid: 5184086490568459046
+  - rid: 5184086490568459047
+  - rid: 5184086490568459048
+  - rid: 5184086490568459049
+  references:
+    version: 2
+    RefIds:
+    - rid: 5184086490568459046
+      type: {class: ExplainStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        title: 
+        body: 'Every time you press or release the trigger, a little extra paint
+          spurts out.
+
+
+          If that happens on the panel, you get heavy spots
+          at the edges.
+
+          Start spraying just before the panel, sweep across,
+          and let go just after it.'
+        buttonLabel: Watch demo
+    - rid: 5184086490568459047
+      type: {class: DemoStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        moves:
+        - caption: Press the trigger before the panel...
+          from: {x: -0.8, y: 0.25}
+          to: {x: 0.8, y: 0.25}
+          distance: 0.2
+          tilt: 0
+          duration: 2.8
+          spray: 1
+          switchColor: 0
+          shake: 0
+        - caption: ...sweep across, and release after the edge.
+          from: {x: 0.8, y: 0.05}
+          to: {x: -0.8, y: 0.05}
+          distance: 0.2
+          tilt: 0
+          duration: 2.8
+          spray: 1
+          switchColor: 0
+          shake: 0
+    - rid: 5184086490568459048
+      type: {class: PracticeStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: 'Paint 4 passes.
+
+          Press the trigger before the panel
+          and release it after the panel, every pass.'
+        reading: {fileID: 0}
+        goal:
+          rid: 5184086490568459050
+        cleanPanel: 1
+    - rid: 5184086490568459049
+      type: {class: AssessStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        skills:
+        - {fileID: 11400000, guid: 1536b223c53902b40bd5ae2b05631553, type: 2}
+        - {fileID: 11400000, guid: 7e7d5383bc8af9140bb14442eeefa47f, type: 2}
+        defects:
+        - {fileID: 11400000, guid: b81ec75cb69cc484f96fe509a5f55843, type: 2}
+    - rid: 5184086490568459050
+      type: {class: PassCountGoal, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        passes: 4

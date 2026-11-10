@@ -9,6 +9,8 @@ Shader "VRSprayPainting/PaintedSurface"
         _Smoothness ("Base Smoothness", Range(0, 1)) = 0.2
         _Metallic ("Base Metallic", Range(0, 1)) = 0
         _PaintSmoothness ("Paint Smoothness", Range(0, 1)) = 0.65
+        _WetSmoothness ("Wet Paint Smoothness", Range(0, 1)) = 0.95
+        [HideInInspector] _Wetness ("Wetness (set at runtime)", Range(0, 1)) = 0
         [NoScaleOffset] _PaintTex ("Paint (set at runtime)", 2D) = "black" {}
         [Enum(UnityEngine.Rendering.CullMode)] _Cull ("Render Face", Float) = 0
     }
@@ -47,8 +49,32 @@ Shader "VRSprayPainting/PaintedSurface"
                 half _Smoothness;
                 half _Metallic;
                 half _PaintSmoothness;
+                half _WetSmoothness;
+                half _Wetness;
                 half _Cull;
             CBUFFER_END
+
+            // Globals, set by AssessmentController: 1 = show paint thickness as a heat map, and the film target
+            // (min / max) as paint volume.
+            float _VRSP_ThicknessView;
+            float _VRSP_FilmLow;
+            float _VRSP_FilmHigh;
+
+            // Thickness heat map against the film target: none = dark, below target (thin) = blue,
+            // in target = green, above target (heavy, runs) = red. Same bands as CoatAnalyzer.
+            half3 ThicknessHeat(half volume)
+            {
+                half low = _VRSP_FilmLow > 0.0 ? _VRSP_FilmLow : 1.6;
+                half high = _VRSP_FilmHigh > low ? _VRSP_FilmHigh : 3.0;
+                half3 none = half3(0.12, 0.12, 0.14);
+                half3 thin = half3(0.15, 0.4, 1.0);
+                half3 good = half3(0.2, 0.85, 0.3);
+                half3 thick = half3(1.0, 0.18, 0.12);
+                half3 c = lerp(none, thin, smoothstep(0.05, low * 0.35, volume));
+                c = lerp(c, good, smoothstep(low * 0.9, low, volume));
+                c = lerp(c, thick, smoothstep(high, high * 1.06, volume));
+                return c;
+            }
 
             struct Attributes
             {
@@ -95,6 +121,7 @@ Shader "VRSprayPainting/PaintedSurface"
 
                 half4 baseSample = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, TRANSFORM_TEX(input.uv, _BaseMap)) * _BaseColor;
                 half4 paint = SAMPLE_TEXTURE2D(_PaintTex, sampler_PaintTex, input.uv);
+                half volume = paint.a;
                 // Paint alpha is volume in coats; how much it hides the surface follows 1 - e^-volume.
                 paint.a = 1.0 - exp(-paint.a);
 
@@ -120,12 +147,16 @@ Shader "VRSprayPainting/PaintedSurface"
                 SurfaceData surface = (SurfaceData)0;
                 surface.albedo = lerp(baseSample.rgb, paint.rgb, paint.a);
                 surface.metallic = lerp(_Metallic, 0.0, paint.a);
-                surface.smoothness = lerp(_Smoothness, _PaintSmoothness, paint.a);
+                // Fresh paint is wet and glossy, then dries to the paint's own sheen.
+                half paintSmoothness = lerp(_PaintSmoothness, _WetSmoothness, saturate(_Wetness));
+                surface.smoothness = lerp(_Smoothness, paintSmoothness, paint.a);
                 surface.occlusion = 1.0;
                 surface.alpha = 1.0;
                 surface.normalTS = half3(0, 0, 1);
 
                 half4 color = UniversalFragmentPBR(inputData, surface);
+                // Heat map is unlit so its colours read the same everywhere in the booth.
+                color.rgb = lerp(color.rgb, ThicknessHeat(volume), saturate(_VRSP_ThicknessView));
                 color.rgb = MixFog(color.rgb, inputData.fogCoord);
                 return color;
             }

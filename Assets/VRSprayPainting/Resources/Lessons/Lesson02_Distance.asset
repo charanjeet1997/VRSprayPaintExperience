@@ -1,0 +1,100 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6733ab7eb86d20d4084a4db0b6c21eed, type: 3}
+  m_Name: Lesson02_Distance
+  m_EditorClassIdentifier: Assembly-CSharp::VRSprayPainting.LessonData
+  lessonId: lesson02_distance
+  title: Keep the right distance
+  summary: Stay {sweetMin}-{sweetMax} cm from the surface.
+  prerequisites:
+  - {fileID: 11400000, guid: 83e4f2ec9d0c4b141979c86eeafc393b, type: 2}
+  sprayers: []
+  steps:
+  - rid: 5184086490568458851
+  - rid: 5184086490568458852
+  - rid: 5184086490568458853
+  - rid: 5184086490568458854
+  references:
+    version: 2
+    RefIds:
+    - rid: 5184086490568458851
+      type: {class: ExplainStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        title: 
+        body: 'How far you hold the sprayer changes the paint completely.
+
+
+          {sweetMin}-{sweetMax}
+          cm (GREEN ring): an even, wet coat.
+
+          Too close (ORANGE): too
+          much paint on a small spot. It gets heavy and runs.
+
+          Too far
+          (YELLOW): paint dries in the air and lands rough and speckled.'
+        buttonLabel: Watch demo
+    - rid: 5184086490568458852
+      type: {class: DemoStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        moves:
+        - caption: '{sweetMin}-{sweetMax} cm, GREEN ring: an even, smooth stripe.'
+          from: {x: -0.45, y: 0.3}
+          to: {x: 0.45, y: 0.3}
+          distance: 0.2
+          tilt: 0
+          duration: 2.6
+          spray: 1
+          switchColor: 0
+          shake: 0
+        - caption: 'Too close, ORANGE ring: a narrow, heavy stripe. Real paint would
+            run.'
+          from: {x: 0.45, y: 0.02}
+          to: {x: -0.45, y: 0.02}
+          distance: 0.07
+          tilt: 0
+          duration: 2.6
+          spray: 1
+          switchColor: 0
+          shake: 0
+        - caption: 'Too far, YELLOW ring: thin, dry and speckled.'
+          from: {x: -0.45, y: -0.28}
+          to: {x: 0.45, y: -0.28}
+          distance: 0.34
+          tilt: 0
+          duration: 2.6
+          spray: 1
+          switchColor: 0
+          shake: 0
+    - rid: 5184086490568458853
+      type: {class: PracticeStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: 'Paint the panel in side-to-side passes.
+
+          Keep the
+          distance above the sprayer GREEN ({sweetMin}-{sweetMax} cm).'
+        reading: {fileID: 11400000, guid: f3c0a05ce4867d2458c8a1d57f8c2260, type: 2}
+        goal:
+          rid: 5184086490568458855
+        cleanPanel: 1
+    - rid: 5184086490568458854
+      type: {class: AssessStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        skills:
+        - {fileID: 11400000, guid: d31cc895cd043e54fa20be06dfd49e8b, type: 2}
+        defects:
+        - {fileID: 11400000, guid: b81ec75cb69cc484f96fe509a5f55843, type: 2}
+        - {fileID: 11400000, guid: 4e3fc8d45a6fb8047b78debeef6059da, type: 2}
+        - {fileID: 11400000, guid: b8952d4d5e384db45a4e6c6ba260d5a7, type: 2}
+    - rid: 5184086490568458855
+      type: {class: SprayTimeGoal, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        seconds: 10

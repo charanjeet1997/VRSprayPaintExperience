@@ -19,5 +19,33 @@ namespace VRSprayPainting
 
         // Paint
         public const string PaintColor = "Paint.Color";
+
+        // Assessment
+        public const string AssessmentResult = "Assessment.Result";             // AssessmentResult
+        public const string AssessmentVisible = "Assessment.Visible";           // bool
+        public const string AssessmentThicknessView = "Assessment.ThicknessView"; // bool
+
+        // App flow
+        public const string AppMode = "App.Mode";                   // AppMode
+        public const string MenuVisible = "Menu.Visible";           // bool
+        public const string MenuCards = "Menu.Cards";               // List<LessonCardInfo>
+        public const string MenuSprayers = "Menu.Sprayers";         // List<SprayerOptionInfo>
+        public const string SprayerCurrent = "Sprayer.Current";     // SprayerProfile
+        public const string HowToVisible = "HowTo.Visible";         // bool
+        public const string HistoryVisible = "History.Visible";     // bool
+        public const string SettingsVisible = "Settings.Visible";   // bool
+        /// <summary>bool: false while a lesson step hides the training cues (e.g. the final test).</summary>
+        public const string CuesAllowed = "Cues.Allowed";
+
+        // Lesson panel
+        public const string LessonVisible = "Lesson.Visible";       // bool
+        public const string LessonStepLabel = "Lesson.StepLabel";
+        public const string LessonTitle = "Lesson.Title";
+        public const string LessonBody = "Lesson.Body";
+        public const string LessonProgress = "Lesson.Progress";     // float, negative hides the bar
+        public const string LessonPrimaryLabel = "Lesson.PrimaryLabel";     // empty hides the button
+        public const string LessonSecondaryLabel = "Lesson.SecondaryLabel"; // empty hides the button
+        public const string LessonSucceeded = "Lesson.Succeeded";   // bool, success accent colour
+        public const string CoachReading = "Lesson.CoachReading";   // CoachReading shown on the sprayer, null = none
     }
 }

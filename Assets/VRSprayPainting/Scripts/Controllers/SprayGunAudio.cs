@@ -33,12 +33,14 @@ namespace VRSprayPainting
         {
             sprayGun.SprayStarted += OnSprayStarted;
             sprayGun.SprayStopped += OnSprayStopped;
+            sprayGun.ProfileChanged += ApplyProfile;
         }
 
         private void OnDisable()
         {
             sprayGun.SprayStarted -= OnSprayStarted;
             sprayGun.SprayStopped -= OnSprayStopped;
+            sprayGun.ProfileChanged -= ApplyProfile;
             loopSource.Stop();
             level = 0f;
         }
@@ -50,6 +52,22 @@ namespace VRSprayPainting
             loopSource.playOnAwake = false;
             loopSource.volume = 0f;
             oneShotSource.playOnAwake = false;
+        }
+
+        // Each sprayer sounds different (gun air hiss vs aerosol can).
+        private void ApplyProfile(SprayerProfile profile)
+        {
+            if (profile.hissLoop != null) hissLoop = profile.hissLoop;
+            if (profile.sprayStart != null) sprayStart = profile.sprayStart;
+            if (profile.sprayStop != null) sprayStop = profile.sprayStop;
+            if (profile.triggerClick != null) triggerClick = profile.triggerClick;
+            hissVolume = profile.hissVolume;
+            pitchRange = profile.pitchRange;
+
+            bool wasPlaying = loopSource.isPlaying;
+            loopSource.clip = hissLoop;
+            if (wasPlaying)
+                loopSource.Play();
         }
 
         private void Update()

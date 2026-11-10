@@ -18,5 +18,12 @@ namespace VRSprayPainting
         public static readonly int AxisV = Shader.PropertyToID("_AxisV");
         public static readonly int Grain = Shader.PropertyToID("_Grain");
         public static readonly int Overspray = Shader.PropertyToID("_Overspray");
+        /// <summary>Global: 1 shows paint thickness as a heat map on every painted surface.</summary>
+        public static readonly int ThicknessView = Shader.PropertyToID("_VRSP_ThicknessView");
+        /// <summary>Global: film target min / max as paint volume, for the heat map bands.</summary>
+        public static readonly int FilmLow = Shader.PropertyToID("_VRSP_FilmLow");
+        public static readonly int FilmHigh = Shader.PropertyToID("_VRSP_FilmHigh");
+        /// <summary>Per renderer: 1 = wet paint just sprayed, 0 = dry.</summary>
+        public static readonly int Wetness = Shader.PropertyToID("_Wetness");
     }
 }

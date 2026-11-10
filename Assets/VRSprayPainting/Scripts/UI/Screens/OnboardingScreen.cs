@@ -85,7 +85,11 @@ namespace VRSprayPainting
         {
             // Negative = this step has no progress bar.
             progressRoot.SetActive(progress >= 0f);
-            progressFill.fillAmount = Mathf.Clamp01(progress);
+            // Bar length by anchors: Image.Filled needs a sprite and draws full without one.
+            RectTransform fill = progressFill.rectTransform;
+            fill.anchorMin = Vector2.zero;
+            fill.anchorMax = new Vector2(Mathf.Clamp01(progress), 1f);
+            fill.offsetMin = fill.offsetMax = Vector2.zero;
         }
 
         private void OnSucceededChanged(bool value)

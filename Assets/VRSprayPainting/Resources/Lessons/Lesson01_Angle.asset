@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6733ab7eb86d20d4084a4db0b6c21eed, type: 3}
+  m_Name: Lesson01_Angle
+  m_EditorClassIdentifier: Assembly-CSharp::VRSprayPainting.LessonData
+  lessonId: lesson01_angle
+  title: Hold the sprayer straight
+  summary: "Point the sprayer straight at the surface (90\xB0)."
+  prerequisites:
+  - {fileID: 11400000, guid: a1fdb5136d560dd45af26a42275ece5d, type: 2}
+  - {fileID: 11400000, guid: 00bd0e8af63249240b7b2ee42bbc4fb0, type: 2}
+  sprayers: []
+  steps:
+  - rid: 5184086490568458856
+  - rid: 5184086490568458857
+  - rid: 5184086490568458858
+  - rid: 5184086490568458859
+  references:
+    version: 2
+    RefIds:
+    - rid: 5184086490568458856
+      type: {class: ExplainStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        title: 
+        body: 'A sprayer must point straight at the surface, like a torch shining
+          straight at a wall.
+
+
+          If you tilt it, one side of the spray is
+          closer than the other. The close side gets too much paint and the far side
+          too little, so the coat comes out uneven.'
+        buttonLabel: Watch demo
+    - rid: 5184086490568458857
+      type: {class: DemoStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        moves:
+        - caption: 'Straight on: the spray lands as a round spot and paints an even
+            stripe.'
+          from: {x: -0.45, y: 0.28}
+          to: {x: 0.45, y: 0.28}
+          distance: 0.2
+          tilt: 0
+          duration: 2.6
+          spray: 1
+          switchColor: 0
+          shake: 0
+        - caption: 'Tilted: the spot stretches into an oval. One side gets heavy
+            paint, the other thin, dry paint.'
+          from: {x: 0.45, y: 0}
+          to: {x: -0.45, y: 0}
+          distance: 0.2
+          tilt: 40
+          duration: 3
+          spray: 1
+          switchColor: 0
+          shake: 0
+        - caption: "Keep it straight (90\xB0) on every pass, even at the ends."
+          from: {x: -0.45, y: -0.28}
+          to: {x: 0.45, y: -0.28}
+          distance: 0.2
+          tilt: 0
+          duration: 2.6
+          spray: 1
+          switchColor: 0
+          shake: 0
+    - rid: 5184086490568458858
+      type: {class: PracticeStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        instruction: "Pick up the sprayer and paint the panel in slow side-to-side
+          passes.\nKeep the number above it GREEN (under {maxTilt}\xB0)."
+        reading: {fileID: 11400000, guid: c7b17ed0121ca85499cec9ece7739830, type: 2}
+        goal:
+          rid: 5184086490568458860
+        cleanPanel: 1
+        showCues: 1
+    - rid: 5184086490568458859
+      type: {class: AssessStep, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        skills:
+        - {fileID: 11400000, guid: ae2a4c65af4ef73499b699dcaa766904, type: 2}
+        defects: []
+    - rid: 5184086490568458860
+      type: {class: SprayTimeGoal, ns: VRSprayPainting, asm: Assembly-CSharp}
+      data:
+        seconds: 10
